@@ -1,24 +1,45 @@
 const display = document.querySelector(".display");
-const numbers = document.querySelectorAll(".number")
-const operations = document.querySelectorAll(".operation")
+const equal = document.querySelector(".equal");
+const clear = document.querySelector(".clear");
+const numbers = document.querySelectorAll(".number");
+const operations = document.querySelectorAll(".operation");
 let input = '';
 
+//listen for mouse click on equal button
+equal.addEventListener("click", function() {
+    display.textContent = '';
+    let result = (operate(`${operator}`, parseInt(num), parseInt(input)));
+    display.textContent = result;
+    
+});
+
+//listen for clear
+clear.addEventListener("click", function() {
+    display.textContent = '';
+    input = 0;
+    num = 0;
+});
+
+//for each input number
 numbers.forEach(number => number.addEventListener("click", function() {
-    appendToDisplay(number.innerHTML);
-    input+=number.innerHTML;
+    appendToDisplay(number.textContent);
+    input+=number.textContent;
 }));
 
+//for each operation + - / *
 operations.forEach(operation => operation.addEventListener("click", function() {
-    appendToDisplay(` ${operation.innerHTML} `);
+    operator = operation.textContent;
+    num = input;
+    input = '';
+    appendToDisplay(` ${operator} `);
 }));
 
-
+//add the numbers onto the display
 function appendToDisplay(number) {
-    display.innerHTML+=number;
+    display.textContent+=number;
 };
 
-
-
+// mathematical operations
 function addNum(num1, num2) {
     return num1 + num2;
 };

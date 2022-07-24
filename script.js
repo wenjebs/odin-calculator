@@ -1,12 +1,19 @@
-let display = document.querySelector(".display");
+const display = document.querySelector(".display");
 const numbers = document.querySelectorAll(".number")
+const operations = document.querySelectorAll(".operation")
 let input = '';
+
 numbers.forEach(number => number.addEventListener("click", function() {
-    appendNumber(number.innerHTML);
+    appendToDisplay(number.innerHTML);
     input+=number.innerHTML;
 }));
 
-function appendNumber(number) {
+operations.forEach(operation => operation.addEventListener("click", function() {
+    appendToDisplay(` ${operation.innerHTML} `);
+}));
+
+
+function appendToDisplay(number) {
     display.innerHTML+=number;
 };
 

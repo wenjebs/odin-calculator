@@ -1,3 +1,17 @@
+let display = document.querySelector(".display");
+const numbers = document.querySelectorAll(".number")
+let input = '';
+numbers.forEach(number => number.addEventListener("click", function() {
+    appendNumber(number.innerHTML);
+    input+=number.innerHTML;
+}));
+
+function appendNumber(number) {
+    display.innerHTML+=number;
+};
+
+
+
 function addNum(num1, num2) {
     return num1 + num2;
 };

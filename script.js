@@ -19,15 +19,6 @@ equal.addEventListener("click", function() {
     calculateNum();
 });
 
-// clear button
-clear.addEventListener("click", function() {
-    display.textContent = '';
-    input = '';
-    num = '';
-    storeResult = '';
-    result = '';
-});
-
 // input numbers button
 numbers.forEach(number => number.addEventListener("click", function() {
     appendToDisplay(number.textContent);
@@ -45,7 +36,8 @@ operations.forEach(operation => operation.addEventListener("click", function() {
         appendToDisplay(` ${operator} `);
         return operator;
     };
-    // operator input save the number input.
+    // else when only 1 number,
+    // when operator inputted, save the number input.
     num = input;
     // clear the input variable
     input = '';
@@ -77,6 +69,15 @@ function calculateNum() {
         input = '';
     }
 };
+
+// clear button
+clear.addEventListener("click", function() {
+    display.textContent = '';
+    input = '';
+    num = '';
+    storeResult = '';
+    result = '';
+});
 
 //add the numbers onto the display
 function appendToDisplay(number) {

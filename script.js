@@ -10,9 +10,9 @@ const numbers = document.querySelectorAll(".number");
 const operations = document.querySelectorAll(".operation");
 let input = '';
 let storeResult = '';
-let operator;
-let num;
-let result;
+let operator = '';
+let num = '';
+let result = '';
 
 // equal button
 equal.addEventListener("click", function() {
@@ -57,21 +57,22 @@ operations.forEach(operation => operation.addEventListener("click", function() {
 
 // calculate the result function
 function calculateNum() {
+    // if not all inputs are in then GET OUT!
     if (!operator || !num | !input) {
         return;
     }
     // if no previous result, use two input
     if (!storeResult) {
         result = (operate(`${operator}`, parseInt(num), parseInt(input)));
-        display.textContent = result;
+        display.textContent = roundNum(result);
         //update storedresult
-        storeResult = result;
+        storeResult = roundNum(result);
     // if already have result, use it
     } else {
         result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
-        display.textContent = result;
+        display.textContent = roundNum(result);
         //update storedresult
-        storeResult = result;
+        storeResult = roundNum(result);
     }
 };
 
@@ -79,6 +80,11 @@ function calculateNum() {
 function appendToDisplay(number) {
     display.textContent+=number;
 };
+
+function roundNum(result) {
+    roundedResult = Math.round(result * 1000) / 1000; 
+    return roundedResult;
+}
 
 // mathematical operations
 function addNum(num1, num2) {

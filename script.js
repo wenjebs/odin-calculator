@@ -16,7 +16,6 @@ let result;
 
 // equal button
 equal.addEventListener("click", function() {
-    display.textContent = '';
     calculateNum();
 });
 
@@ -58,6 +57,9 @@ operations.forEach(operation => operation.addEventListener("click", function() {
 
 // calculate the result function
 function calculateNum() {
+    if (!operator || !num | !input) {
+        return;
+    }
     // if no previous result, use two input
     if (!storeResult) {
         result = (operate(`${operator}`, parseInt(num), parseInt(input)));

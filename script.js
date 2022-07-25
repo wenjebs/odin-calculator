@@ -1,13 +1,14 @@
 /* 
 to do list :
-fix up multiple operations able to be inputted
-fix up all the FUCKING ERORS GOD DAMN
+ allow for modificatino of stored result 
+ allow for input of negatie numbers
 */
 const display = document.querySelector(".display");
 const equal = document.querySelector(".equal");
 const clear = document.querySelector(".clear");
 const numbers = document.querySelectorAll(".number");
 const operations = document.querySelectorAll(".operation");
+const operators = ['+', '-', '/', '*'];
 let input = '';
 let storeResult = '';
 let operator = '';
@@ -27,15 +28,31 @@ numbers.forEach(number => number.addEventListener("click", function() {
 }));
 
 // operation button
-operations.forEach(operation => operation.addEventListener("click", function() {
+operations.forEach(operation => operation.addEventListener("click", function(e) {
     // if there are already two numbers, calculate them and return the value
-    if ((num || num == '0') && input) {
+    if ((num || num == '0' || storeResult) && input) {
         calculateNum();
         input = '';
         operator = operation.textContent;
         appendToDisplay(` ${operator} `);
-        return operator;
+        return;
     };
+
+    // if there is already an operator inside display AND there is no stored result
+    if (operators.some(element => (display.textContent).includes(` ${element} `)) && (!storeResult || storeResult !== '0') && !input) {
+        display.textContent = display.textContent.replace(/(\s\*\s)|(\s\+\s)|((\s\-\s))|((\s\/\s))/g, ` ${e.target.textContent} `);
+        operator = e.target.textContent;
+        return;
+    }
+
+    // if there is no numbers dont put the operation
+    if ((!num || !storeResult) && !input) {
+        if (e.target.textContent == '-') {
+            input += '-';
+            display.textContent = '-';
+            return;
+        }
+    }
     // else when only 1 number,
     // when operator inputted, save the number input.
     num = input;
@@ -49,7 +66,7 @@ operations.forEach(operation => operation.addEventListener("click", function() {
 
 // calculate the result function
 function calculateNum() {
-    // if not all inputs are in then GET OUT!
+    // if not all inputs(operator, number) are in then GET OUT!
     if (!operator || !input) {
         return;
     }
@@ -70,13 +87,14 @@ function calculateNum() {
     }
 };
 
-// clear button
+// clear button event listener
 clear.addEventListener("click", function() {
     display.textContent = '';
     input = '';
     num = '';
     storeResult = '';
     result = '';
+    roundedResult = '';
 });
 
 //add the numbers onto the display

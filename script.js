@@ -29,18 +29,17 @@ let result = '';
 // equal button
 equal.addEventListener("click", function() {
     calculateNum();
-    operator = '';
 });
 
 // input numbers button
 numbers.forEach(number => number.addEventListener("click", function() {
-    if (storeResult && !operator) {
+    if (storeResult && display.textContent == storeResult) {
         appendToDisplay(number.textContent);
         storeResult += number.textContent
         return;
     }
-    // iIF num not equal to 0 or display is not empty(allows 0 when thers alr num) AND check IF input already has 0 for operations, allow the num to be displayed
-    if (number.textContent !== '0' || display.textContent !== '' && input !== '0') {
+    // iIF num not equal to 0 or display is not empty, neg, alr has 0(allows 0 when thers alr num) AND check IF input already has 0 for operations, else allow the num to be displayed
+    if (number.textContent !== '0' || (display.textContent !== '' && display.textContent !== '-' && display.textContent !== '0')) {
         appendToDisplay(number.textContent);
         input+=number.textContent;
     }
@@ -54,7 +53,6 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
         input = '';
         operator = operation.textContent;
         appendToDisplay(` ${operator} `);
-        operator = '';
         return;
     };
 

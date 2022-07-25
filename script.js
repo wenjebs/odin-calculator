@@ -1,7 +1,20 @@
 /* 
 to do list :
- allow for modificatino of stored result 
- allow for input of negatie numbers
+ add a second div to input ans and put the former calc
+ allow for modification of stored result 
+
+ ---------------------------------------------------------
+ PREVENT input of many 0's (DONe)
+ Prevent division by 0 (DONE)
+ prevent equal when only 1 num ( DONE!)
+ alow input of negative number ( DONE! )
+ USE STORED VALUE ( DONE!)
+ CHANGE OPERAND WHEN ALR INPUTTED (DONE )
+ CALCULATE N GET STORED VALUE WHEN TWO NUMS 
+ + OPERAND INPUTTED WHEN OPERAND PRESSED ( DONE)
+ ALLOW FOR CALCULATIONS USING PREVIOUSLY CALC VALUE ( DONE)
+ PREVENT DECIMAL OVERFLOW ( DONE)
+
 */
 const display = document.querySelector(".display");
 const equal = document.querySelector(".equal");
@@ -22,9 +35,11 @@ equal.addEventListener("click", function() {
 
 // input numbers button
 numbers.forEach(number => number.addEventListener("click", function() {
-    appendToDisplay(number.textContent);
-    // store ur input
-    input+=number.textContent;
+    // iIF num not equal to 0 or display is not empty(allows 0 when thers alr num) AND check IF input already has 0 for operations, allow the num to be displayed
+    if (number.textContent !== '0' || display.textContent !== '' && input !== '0') {
+        appendToDisplay(number.textContent);
+        input+=number.textContent;
+    }
 }));
 
 // operation button
@@ -45,13 +60,14 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
         return;
     }
 
-    // if there is no numbers dont put the operation
-    if ((!num || !storeResult) && !input) {
-        if (e.target.textContent == '-') {
+    // if there is no numbers dont put the operation (also check if u want to input negative number)
+    if ((!num && !storeResult) && (!input || input == '-')) {
+        if (e.target.textContent == '-' &&  display.textContent !== '-') {
             input += '-';
             display.textContent = '-';
             return;
         }
+        return;
     }
     // else when only 1 number,
     // when operator inputted, save the number input.
@@ -67,12 +83,15 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
 // calculate the result function
 function calculateNum() {
     // if not all inputs(operator, number) are in then GET OUT!
-    if (!operator || !input) {
+    if ((!operator || operator == '') || !input) {
         return;
     }
     // if no previous result, use two input
     if (!storeResult && storeResult !== 0) {
         result = (operate(`${operator}`, parseInt(num), parseInt(input)));
+        if (result == "You cant divide by 0! FOOL") {
+            return;
+        }
         display.textContent = roundNum(result);
         //update storedresult
         storeResult = roundNum(result);
@@ -88,14 +107,19 @@ function calculateNum() {
 };
 
 // clear button event listener
-clear.addEventListener("click", function() {
+clear.addEventListener('click', function() {
+    clearCalc();
+});
+
+function clearCalc() {
     display.textContent = '';
     input = '';
     num = '';
     storeResult = '';
     result = '';
     roundedResult = '';
-});
+    operator = '';
+};
 
 //add the numbers onto the display
 function appendToDisplay(number) {
@@ -121,6 +145,11 @@ function multiplyNum(num1, num2) {
 };
 
 function divideNum(num1, num2) {
+    if (num2 == 0) {
+        alert("You cant divide by 0! FOOL");
+        clearCalc();
+        return "You cant divide by 0! FOOL";
+    }
     return num1 / num2;
 };
 

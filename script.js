@@ -1,17 +1,15 @@
 /* 
 to do list :
  add a second div to input ans and put the former calc
- allow for modification of stored result 
-
  ---------------------------------------------------------
+ allow for modification of stored result (done)
  PREVENT input of many 0's (DONe)
  Prevent division by 0 (DONE)
  prevent equal when only 1 num ( DONE!)
  alow input of negative number ( DONE! )
  USE STORED VALUE ( DONE!)
  CHANGE OPERAND WHEN ALR INPUTTED (DONE )
- CALCULATE N GET STORED VALUE WHEN TWO NUMS 
- + OPERAND INPUTTED WHEN OPERAND PRESSED ( DONE)
+ CALCULATE N GET STORED VALUE WHEN TWO NUMS + OPERAND INPUTTED WHEN OPERAND PRESSED ( DONE)
  ALLOW FOR CALCULATIONS USING PREVIOUSLY CALC VALUE ( DONE)
  PREVENT DECIMAL OVERFLOW ( DONE)
 
@@ -31,10 +29,16 @@ let result = '';
 // equal button
 equal.addEventListener("click", function() {
     calculateNum();
+    operator = '';
 });
 
 // input numbers button
 numbers.forEach(number => number.addEventListener("click", function() {
+    if (storeResult && !operator) {
+        appendToDisplay(number.textContent);
+        storeResult += number.textContent
+        return;
+    }
     // iIF num not equal to 0 or display is not empty(allows 0 when thers alr num) AND check IF input already has 0 for operations, allow the num to be displayed
     if (number.textContent !== '0' || display.textContent !== '' && input !== '0') {
         appendToDisplay(number.textContent);
@@ -50,6 +54,7 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
         input = '';
         operator = operation.textContent;
         appendToDisplay(` ${operator} `);
+        operator = '';
         return;
     };
 

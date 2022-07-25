@@ -1,3 +1,8 @@
+/* 
+to do list :
+fix up multiple operations able to be inputted
+fix up all the FUCKING ERORS GOD DAMN
+*/
 const display = document.querySelector(".display");
 const equal = document.querySelector(".equal");
 const clear = document.querySelector(".clear");
@@ -6,49 +11,67 @@ const operations = document.querySelectorAll(".operation");
 let input = '';
 let storeResult = '';
 let operator;
-//listen for mouse click on equal button
+let num;
+let result;
+
+// equal button
 equal.addEventListener("click", function() {
     display.textContent = '';
-    // if there hasnt been a previous result use the one u inputted
-    if (!storeResult) {
-        let result = (operate(`${operator}`, parseInt(num), parseInt(input)));
-        display.textContent = result;
-        storeResult = result;
-    // else if there is a result alr from previous operations u shd use it
-    } else {
-        let result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
-        display.textContent = result;
-        //update new storedresult
-        storeResult = result;
-    }
+    calculateNum();
 });
 
-//listen for clear
+// clear button
 clear.addEventListener("click", function() {
     display.textContent = '';
     input = '';
     num = '';
     storeResult = '';
+    result = '';
 });
 
-//for each input number
+// input numbers button
 numbers.forEach(number => number.addEventListener("click", function() {
     appendToDisplay(number.textContent);
     // store ur input
     input+=number.textContent;
 }));
 
-//for each operation + - / *
+// operation button
 operations.forEach(operation => operation.addEventListener("click", function() {
-    // when u press + - / * save the previous input
+    // if there are already two numbers, calculate them and return the value
+    if (num && input) {
+        calculateNum();
+        input = '';
+        operator = operation.textContent;
+        appendToDisplay(` ${operator} `);
+        return operator;
+    };
+    // operator input save the number input.
     num = input;
-    // delete the current saved input
+    // clear the input variable
     input = '';
     // add to display
     operator = operation.textContent;
     appendToDisplay(` ${operator} `);
     return operator;
 }));
+
+// calculate the result function
+function calculateNum() {
+    // if no previous result, use two input
+    if (!storeResult) {
+        result = (operate(`${operator}`, parseInt(num), parseInt(input)));
+        display.textContent = result;
+        //update storedresult
+        storeResult = result;
+    // if already have result, use it
+    } else {
+        result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
+        display.textContent = result;
+        //update storedresult
+        storeResult = result;
+    }
+};
 
 //add the numbers onto the display
 function appendToDisplay(number) {

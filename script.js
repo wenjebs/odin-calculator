@@ -38,7 +38,7 @@ numbers.forEach(number => number.addEventListener("click", function() {
 // operation button
 operations.forEach(operation => operation.addEventListener("click", function() {
     // if there are already two numbers, calculate them and return the value
-    if (num && input) {
+    if ((num || num == '0') && input) {
         calculateNum();
         input = '';
         operator = operation.textContent;
@@ -58,21 +58,23 @@ operations.forEach(operation => operation.addEventListener("click", function() {
 // calculate the result function
 function calculateNum() {
     // if not all inputs are in then GET OUT!
-    if (!operator || !num | !input) {
+    if (!operator || !input) {
         return;
     }
     // if no previous result, use two input
-    if (!storeResult) {
+    if (!storeResult && storeResult !== 0) {
         result = (operate(`${operator}`, parseInt(num), parseInt(input)));
         display.textContent = roundNum(result);
         //update storedresult
         storeResult = roundNum(result);
+        input = '';
     // if already have result, use it
     } else {
         result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
         display.textContent = roundNum(result);
         //update storedresult
         storeResult = roundNum(result);
+        input = '';
     }
 };
 

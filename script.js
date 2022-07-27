@@ -14,6 +14,7 @@ to do list :
  PREVENT DECIMAL OVERFLOW ( DONE)
 
 */
+const topDisplay = document.querySelector(".topDisplay");
 const display = document.querySelector(".display");
 const equal = document.querySelector(".equal");
 const clear = document.querySelector(".clear");
@@ -28,6 +29,10 @@ let result = '';
 
 // equal button
 equal.addEventListener("click", function() {
+    // if (!topDisplay.textContent || topDisplay.textContent == '0') {
+    //     calculateNum();
+    //     topDisplay.textContent = display.textContent;
+    // }
     calculateNum();
 });
 
@@ -42,6 +47,7 @@ numbers.forEach(number => number.addEventListener("click", function() {
     if (number.textContent !== '0' || (display.textContent !== '' && display.textContent !== '-' && display.textContent !== '0')) {
         appendToDisplay(number.textContent);
         input+=number.textContent;
+        replaceTopDisplay();
     }
 }));
 
@@ -53,6 +59,7 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
         input = '';
         operator = operation.textContent;
         appendToDisplay(` ${operator} `);
+        replaceTopDisplay();
         return;
     };
 
@@ -60,6 +67,7 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
     if (operators.some(element => (display.textContent).includes(` ${element} `)) && (!storeResult || storeResult !== '0') && !input) {
         display.textContent = display.textContent.replace(/(\s\*\s)|(\s\+\s)|((\s\-\s))|((\s\/\s))/g, ` ${e.target.textContent} `);
         operator = e.target.textContent;
+        replaceTopDisplay();
         return;
     }
 
@@ -80,6 +88,7 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
     // add to display
     operator = operation.textContent;
     appendToDisplay(` ${operator} `);
+    replaceTopDisplay();
     return operator;
 }));
 
@@ -95,6 +104,7 @@ function calculateNum() {
         if (result == "You cant divide by 0! FOOL") {
             return;
         }
+        topDisplay.textContent = display.textContent;
         display.textContent = roundNum(result);
         //update storedresult
         storeResult = roundNum(result);
@@ -102,7 +112,11 @@ function calculateNum() {
     // if already have result, use it
     } else {
         result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
+        topDisplay.textContent = display.textContent;
         display.textContent = roundNum(result);
+        if (display.style.visibility == 'hidden') {
+            display.style.visibility = 'visible'
+        }
         //update storedresult
         storeResult = roundNum(result);
         input = '';
@@ -116,6 +130,7 @@ clear.addEventListener('click', function() {
 
 function clearCalc() {
     display.textContent = '';
+    topDisplay.textContent = '';
     input = '';
     num = '';
     storeResult = '';
@@ -132,6 +147,19 @@ function appendToDisplay(number) {
 function roundNum(result) {
     roundedResult = Math.round(result * 1000) / 1000; 
     return roundedResult;
+}
+
+//function for appending to top display
+function replaceTopDisplay() {
+    // if topdisplay have and have input, topdisplay add operator AND input
+    if (topDisplay.textContent && input) {
+        topDisplay.textContent = storeResult +` ${operator} ` + input;
+        display.style.visibility = 'hidden';
+    }   else if (topDisplay.textContent) {
+        topDisplay.textContent = storeResult +` ${operator} `;
+        display.style.visibility = 'hidden';
+    }
+
 }
 
 // mathematical operations

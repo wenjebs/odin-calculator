@@ -38,6 +38,13 @@ equal.addEventListener("click", function() {
 
 // input numbers button
 numbers.forEach(number => number.addEventListener("click", function() {
+    if (display.textContent == '0') {
+        topDisplay.textContent = ''
+        display.textContent = number.textContent;
+        input += number.textContent;
+        return;
+    }
+
     if (storeResult && display.textContent == storeResult) {
         appendToDisplay(number.textContent);
         storeResult += number.textContent
@@ -109,11 +116,11 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
 // calculate the result function
 function calculateNum() {
     // if not all inputs(operator, number) are in then GET OUT!
-    if ((!operator || operator == '') || !input) {
+    if ((!operator || operator == '') || (!input && !num)) {
         return;
     }
     // if no previous result, use two input
-    if (!storeResult || storeResult == 0) {
+    if (!storeResult && storeResult !== 0) {
         result = (operate(`${operator}`, parseInt(num), parseInt(input)));
         if (result == "You cant divide by 0! FOOL") {
             return;
@@ -124,7 +131,7 @@ function calculateNum() {
         storeResult = roundNum(result);
         input = '';
     // if already have result, use it
-    } else {
+    } else if (input) {
         if (storeResult.toString().includes('e')) {
             result = (operate(`${operator}`, storeResult, parseInt(input)));
         } else {
@@ -151,6 +158,7 @@ deleteButton.addEventListener('click', function() {
 
 });
 function deleteCharacter() {
+    // if display hidden dont do anything!!. if not then u can modify the results using delete
     if (display.textContent && !storeResult && display.style.visibility !== 'hidden') {
         if (input && !operator) {
             input = input.slice(0, input.length-1);
@@ -174,7 +182,8 @@ function deleteCharacter() {
 
     if (!display.textContent) {
         display.textContent = '0';
-        storeResult = 0;
+        storeResult = '0';
+        operator = '';
     }
 
 };

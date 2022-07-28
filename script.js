@@ -1,7 +1,9 @@
 /* 
 to do list :
- add a second div to input ans and put the former calc
+ add decimal pt feature
+ add del feature
  ---------------------------------------------------------
+ add a second div to input ans and put the former calc (DONE)
  allow for modification of stored result (done)
  PREVENT input of many 0's (DONe)
  Prevent division by 0 (DONE)
@@ -18,9 +20,11 @@ const topDisplay = document.querySelector(".topDisplay");
 const display = document.querySelector(".display");
 const equal = document.querySelector(".equal");
 const clear = document.querySelector(".clear");
+const deleteButton = document.querySelector(".delete");
 const numbers = document.querySelectorAll(".number");
 const operations = document.querySelectorAll(".operation");
 const operators = ['+', '-', '/', '*'];
+const opRegex = /(\s\*\s)|(\s\+\s)|((\s\-\s))|((\s\/\s))/g;
 let input = '';
 let storeResult = '';
 let operator = '';
@@ -41,7 +45,15 @@ numbers.forEach(number => number.addEventListener("click", function() {
     }
     // iIF num not equal to 0 or display is not empty, neg, alr has 0(allows 0 when thers alr num) AND check IF input already has 0 for operations, else allow the num to be displayed
     if (number.textContent !== '0' || (display.textContent !== '' && display.textContent !== '-' && display.textContent !== '0')) {
+        if (storeResult == 0 && display.textContent == '0') {
+            delDisplay();
+        }
         appendToDisplay(number.textContent);
+        if (num && !operator) {
+            num+=number.textContent;
+            replaceTopDisplay();
+            return;
+        }
         input+=number.textContent;
         replaceTopDisplay();
     }
@@ -61,7 +73,7 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
 
     // if there is already an operator inside display AND there is no stored result
     if (operators.some(element => (display.textContent).includes(` ${element} `)) && (!storeResult || storeResult !== '0') && !input) {
-        display.textContent = display.textContent.replace(/(\s\*\s)|(\s\+\s)|((\s\-\s))|((\s\/\s))/g, ` ${e.target.textContent} `);
+        display.textContent = display.textContent.replace(opRegex, ` ${e.target.textContent} `);
         operator = e.target.textContent;
         replaceTopDisplay();
         return;
@@ -75,6 +87,12 @@ operations.forEach(operation => operation.addEventListener("click", function(e) 
             return;
         }
         return;
+    }
+    if (num) {
+        operator = operation.textContent;
+        appendToDisplay(` ${operator} `);
+        replaceTopDisplay();
+        return operator;
     }
     // else when only 1 number,
     // when operator inputted, save the number input.
@@ -95,7 +113,7 @@ function calculateNum() {
         return;
     }
     // if no previous result, use two input
-    if (!storeResult && storeResult !== 0) {
+    if (!storeResult || storeResult == 0) {
         result = (operate(`${operator}`, parseInt(num), parseInt(input)));
         if (result == "You cant divide by 0! FOOL") {
             return;
@@ -107,7 +125,11 @@ function calculateNum() {
         input = '';
     // if already have result, use it
     } else {
-        result = (operate(`${operator}`, storeResult, parseInt(input)));
+        if (storeResult.toString().includes('e')) {
+            result = (operate(`${operator}`, storeResult, parseInt(input)));
+        } else {
+            result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
+        };
         topDisplay.textContent = display.textContent;
         display.textContent = roundNum(result);
         if (display.style.visibility == 'hidden') {
@@ -124,6 +146,38 @@ clear.addEventListener('click', function() {
     clearCalc();
 });
 
+deleteButton.addEventListener('click', function() {
+    deleteCharacter();
+
+});
+function deleteCharacter() {
+    if (display.textContent && !storeResult && display.style.visibility !== 'hidden') {
+        if (input && !operator) {
+            input = input.slice(0, input.length-1);
+            delDisplay();
+            return;
+        }
+        if (input && operator) {
+            input = input.slice(0, input.length-1);
+            delDisplay();
+        } else if (display.textContent.includes(' + '||' - '||' / '||' * ')) {
+            display.textContent = display.textContent.replace(opRegex, '')
+            operator = '';
+        } else {
+            num = num.slice(0, input.length-1);
+            delDisplay();
+        }
+    } else if (display.style.visibility !== 'hidden') {
+        delDisplay()
+        storeResult = storeResult.toString().slice(0, input.length-1);
+    }
+
+    if (!display.textContent) {
+        display.textContent = '0';
+        storeResult = 0;
+    }
+
+};
 function clearCalc() {
     display.textContent = '';
     topDisplay.textContent = '';
@@ -134,6 +188,10 @@ function clearCalc() {
     roundedResult = '';
     operator = '';
     display.style.visibility = 'visible'
+};
+
+function delDisplay() {
+    display.textContent = display.textContent.slice(0, display.textContent.length-1);
 };
 
 //add the numbers onto the display

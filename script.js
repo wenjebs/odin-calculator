@@ -29,10 +29,6 @@ let result = '';
 
 // equal button
 equal.addEventListener("click", function() {
-    // if (!topDisplay.textContent || topDisplay.textContent == '0') {
-    //     calculateNum();
-    //     topDisplay.textContent = display.textContent;
-    // }
     calculateNum();
 });
 
@@ -111,7 +107,7 @@ function calculateNum() {
         input = '';
     // if already have result, use it
     } else {
-        result = (operate(`${operator}`, parseInt(storeResult), parseInt(input)));
+        result = (operate(`${operator}`, storeResult, parseInt(input)));
         topDisplay.textContent = display.textContent;
         display.textContent = roundNum(result);
         if (display.style.visibility == 'hidden') {
@@ -137,6 +133,7 @@ function clearCalc() {
     result = '';
     roundedResult = '';
     operator = '';
+    display.style.visibility = 'visible'
 };
 
 //add the numbers onto the display
